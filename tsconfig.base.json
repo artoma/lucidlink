@@ -14,7 +14,13 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@lucidlink-interview/api-types": ["libs/api-types/src/index.ts"],
+      "@lucidlink-interview/data": ["libs/api/data/src/index.ts"],
+      "@lucidlink-interview/stock-analyzer": [
+        "libs/api/stock-analyzer/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

@@ -11,6 +11,9 @@
       ],
       "defaultConfiguration": "production",
       "options": {
+        "generatePackageJson": true,
+        "externalDependencies":"none",
+        "importHelpers": false,
         "target": "node",
         "compiler": "tsc",
         "outputPath": "dist/apps/api",
