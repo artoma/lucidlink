@@ -1,7 +1,6 @@
 import {
     Controller,
     Get,
-    ParseFloatPipe,
     ParseIntPipe,
     Query,
 } from '@nestjs/common';
@@ -21,17 +20,11 @@ export class AppController {
     }
 
     @Get('graph')
-    getGraph(
-        @Query('startDate', ParseIntPipe) startDate: number,
-        @Query('endDate', ParseIntPipe) endDate: number
-    ) {
+    getGraph() {
         return this.appService
             .getGraphData()
-            .filter(
-                (item) =>
-                    item.timeStamp >= startDate && item.timeStamp <= endDate
-            )
+            .slice(1000, 2000)
             .map((item) => [item.timeStamp, item.price])
-            .slice(1000, 2000);
+            
     }
 }

@@ -3,19 +3,20 @@ import ReactApexChart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
-import CurrencyInput from 'react-currency-input-field';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 import '@wojtekmaj/react-datetimerange-picker/dist/DateTimeRangePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
+import AvailableFunds from './available-funds';
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface GraphComponentProps {}
 
-const GraphComponent: React.FC<GraphComponentProps> = () => {
+const GraphComponent: React.FC = () => {
     const [data, setData] = useState([]);
     const [dateTimeValue, updateDateTime] = useState<Value>([
         new Date(1698181200000),
@@ -25,17 +26,20 @@ const GraphComponent: React.FC<GraphComponentProps> = () => {
     const [bestSellTime, setBestSellTime] = useState(0);
     const [bestBuyPrice, setbestBuyPrice] = useState(0);
     const [bestSellPrice, setBestSellPrice] = useState(0);
-    const [profit, setProfit] = useState<number | undefined>(0);
+    const [profit, setProfit] = useState<number | 0>(0);
+    const [stocksCount, setStocksCount] = useState<number | 0>(0);
+    const [disableButton, setDisableButton] = useState(true);
+    const [funds, setFunds] = useState(0.0);
+    const [bestBuyTimeInfo, setBestBuyTimeInfo] = useState('');
+    const [bestSellTimeInfo, setBestSellTimeInfo] = useState('');
 
     useEffect(() => {
-        const startDate = 1698181200000;
-        const endDate = 1699045199000;
-        const loadData = async (apiUrl: string) => {
+            const loadData = async (apiUrl: string) => {
             const res = await axios.get(apiUrl);
             setData(res.data);
         };
         loadData(
-            `http://localhost:4939/api/graph?startDate=${startDate}&endDate=${endDate}`
+            `http://localhost:4939/api/graph`
         );
     }, []);
 
@@ -64,6 +68,14 @@ const GraphComponent: React.FC<GraphComponentProps> = () => {
         };
         chartUpdatedEvent();
     }, [bestBuyPrice, bestBuyTime, bestSellPrice, bestSellTime, data]);
+    
+    useEffect(() => {
+        if(bestBuyTime > 0 && bestSellTime > 0){
+            setBestBuyTimeInfo(new Date(bestBuyTime).toString());
+            setBestSellTimeInfo(new Date(bestSellTime).toString());
+        }
+            
+    }, [bestBuyTime, bestSellTime])
 
     const loadIntervalData = async (apiUrl: string) => {
         const res = await axios.get(apiUrl);
@@ -72,23 +84,23 @@ const GraphComponent: React.FC<GraphComponentProps> = () => {
         setBestSellTime(res.data.bestSellTime);
         setbestBuyPrice(res.data.bestBuyPrice);
         setBestSellPrice(res.data.bestSellPrice);
+
+        
+        const _stockCount = funds / res.data.bestBuyPrice;
+        setStocksCount(_stockCount || 0);
+        const buyPrice = _stockCount * res.data.bestBuyPrice
+        const sellPrice = _stockCount * res.data.bestSellPrice;
+        setProfit(sellPrice - buyPrice || 0);
+        
     };
 
     const buttonClick = async () => {
         const dateRangeArray = dateTimeValue as [Date, Date];
         const startDate = Date.parse(dateRangeArray[0].toString());
         const endDate = Date.parse(dateRangeArray[1].toString());
-        const apiUrl = `http://localhost:4939/api?startDate=${startDate}&endDate=${endDate}&amount=${111}`;
+        const apiUrl = `http://localhost:4939/api?startDate=${startDate}&endDate=${endDate}`;
 
         await loadIntervalData(apiUrl);
-    };
-
-    const validateValue = (value: string | undefined): void => {
-        const rawValue = value === undefined ? 'undefined' : value;
-        const parsedValue = parseFloat(rawValue.toString()).toFixed(2);
-
-        const potentialProfit = ( parseFloat(parsedValue.toString()) / bestBuyPrice)*bestSellPrice;
-        setProfit( potentialProfit || 0);
     };
 
     const series: ApexAxisChartSeries = [
@@ -166,6 +178,10 @@ const GraphComponent: React.FC<GraphComponentProps> = () => {
             },
         },
     };
+    const getFunds = (_funds: number) => {
+        setFunds(_funds);
+        setDisableButton(false);
+    };
 
     return (
         <div>
@@ -175,27 +191,44 @@ const GraphComponent: React.FC<GraphComponentProps> = () => {
                 type="area"
                 height={350}
             />
-            <DateTimeRangePicker
-                minDate={new Date(1698181200000)}
-                maxDate={new Date(1699045199000)}
-                onChange={updateDateTime}
-                value={dateTimeValue}
-            />
-            <p>
-                <CurrencyInput
-                    prefix="$"
-                    id="input-example"
-                    name="input-name"
-                    placeholder="Please enter a number"
-                    defaultValue={1000}
-                    decimalsLimit={2}
-                    onValueChange={validateValue}
-                />
-            </p>
-            <p>Profit: {profit}</p>
-            <Button onClick={buttonClick} variant="primary">
-                Submit
-            </Button>
+            <Container fluid="md">
+                <Row className="my-3">
+                    <Col>
+                        <label
+                            className="control-label"
+                        >
+                            Select period:{' '}
+                        </label>
+                        <DateTimeRangePicker
+                            className="form-control"
+                            
+                            nativeInputAriaLabel=""
+                            minDate={new Date(1698181200000)}
+                            maxDate={new Date(1699045199000)}
+                            onChange={updateDateTime}
+                            value={dateTimeValue}
+                        />
+
+                        <AvailableFunds getFunds={getFunds} />
+
+                        <Button
+                            disabled={disableButton}
+                            className="my-1"
+                            onClick={buttonClick}
+                            variant="primary"
+                        >
+                            Submit
+                        </Button>
+                    </Col>
+                    <Col>
+                        <b>Result:</b><br/>
+                        Buy Date: {bestBuyTimeInfo} <br />
+                        Sell Date: {bestSellTimeInfo} <br />
+                        Stocks you can buy: {stocksCount.toFixed(2)} <br />
+                        Profit: ${profit.toFixed(2)}
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 };

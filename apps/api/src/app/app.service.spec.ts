@@ -1,21 +1,44 @@
-import { Test } from '@nestjs/testing';
-
+import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from './app.service';
+import { ConfigService } from '@nestjs/config';
+import { HttpException } from '@nestjs/common';
+import { StockAnalyzerService } from '@lucidlink-interview/stock-analyzer';
+import { DataService } from '@lucidlink-interview/data';
 
 describe('AppService', () => {
-  let service: AppService;
+    let appService: AppService;
+    let appModule: TestingModule;
+	let configService: ConfigService;
 
-  beforeAll(async () => {
-    const app = await Test.createTestingModule({
-      providers: [AppService],
-    }).compile();
+    beforeAll(async () => {
+        appModule = await Test.createTestingModule({
+            providers: [
+				AppService, 
+				{
+					provide: ConfigService,
+					useValue: {
+						get: jest.fn(() => 1698267600000)
+					}
+				},
+				StockAnalyzerService,
+				DataService,
 
-    service = app.get<AppService>(AppService);
-  });
+			],
+        }).compile();
 
-  describe('getData', () => {
-    it('should return "Hello API"', () => {
-      expect(service.getData()).toEqual({message: 'Hello API'});
+        appService = appModule.get<AppService>(AppService);
+		configService = appModule.get<ConfigService>(ConfigService);
+
     });
-  });
+
+    describe('getData', () => {
+        it('should throw HttpException if startDate is smaller then period startDate"', () => {
+            jest.spyOn(configService, 'get');
+            expect(() => {appService.getData(169826760000, 1698616800000)}).toThrow(HttpException);
+        });
+		it('should throw HttpException if endDate is biger then period endDate"', () => {
+            jest.spyOn(configService, 'get');
+            expect(() => {appService.getData(169826760000, 11698616800000)}).toThrow(HttpException);
+        });
+    });
 });

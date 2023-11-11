@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
     StockValue,
-    IntervalAnalyzerResult,
+    IntervalAnalyzerDto,
     AnalyzerResult,
 } from '@lucidlink-interview/api-types';
 import { DataService } from '@lucidlink-interview/data';
@@ -13,7 +13,7 @@ export class StockAnalyzerService {
     mostProfitInterval(
         startDate: number,
         endDate: number
-    ): IntervalAnalyzerResult {
+    ): IntervalAnalyzerDto {
         const stockData: StockValue[] = this.dataService.getData();
         const interval: StockValue[] = stockData.filter(
             (item) => item.timeStamp >= startDate && item.timeStamp <= endDate
@@ -31,7 +31,7 @@ export class StockAnalyzerService {
             bestBuyTime: interval[maxProfitInterval.bestBi].timeStamp,
             bestSellTime: interval[maxProfitInterval.bestSi].timeStamp,
             interval: shortInterval.map((item) => [item.timeStamp, item.price]),
-        } as IntervalAnalyzerResult;
+        } as IntervalAnalyzerDto;
     }
 
     private findMaxProfitInterval(
@@ -60,7 +60,7 @@ export class StockAnalyzerService {
         return { maxProfit, bestBi, bestSi } as AnalyzerResult;
     }
 
-    getGraphData() {
+    getGraphData(): StockValue[] {
         return this.dataService.getData();
     }
 }

@@ -23,6 +23,8 @@ const WebPackIgnorePlugin =
         'class-transformer',
         'class-validator',
         'fastify-static',
+        'utf-8-validate',
+        'bufferutil',
     ];
   
     if (!lazyImports.includes(resource))
