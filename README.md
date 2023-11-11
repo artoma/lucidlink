@@ -6,12 +6,19 @@
 
 
 ## Start the app
-Please first run 
-`npm install --legacy-peer-deps`
+Please first run:
+```
+npm install --legacy-peer-deps
+```
+To start the development api app run:
 
-To start the development api app run `nx serve api`. 
-
-To start development frontend app `nx serve frontend`
+```
+nx serve api 
+```
+To start development frontend app 
+```
+nx serve frontend
+```
 Open your browser and navigate to http://localhost:4200/.
 
 
