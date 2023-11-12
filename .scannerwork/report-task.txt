@@ -1,0 +1,6 @@
+projectKey=lucidlink
+serverUrl=http://localhost:8080
+serverVersion=9.9.2.77730
+dashboardUrl=http://localhost:8080/dashboard?id=lucidlink
+ceTaskId=AYvCiV6UMeIK-61DdbYA
+ceTaskUrl=http://localhost:8080/api/ce/task?id=AYvCiV6UMeIK-61DdbYA

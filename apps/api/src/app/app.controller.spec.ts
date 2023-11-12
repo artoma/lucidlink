@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { IntervalAnalyzerDto } from '@lucidlink-interview/api-types';
-import { interval } from 'rxjs';
 import { DataService } from '@lucidlink-interview/data';
 import { ConfigService } from '@nestjs/config';
 import { StockAnalyzerService } from '@lucidlink-interview/stock-analyzer';
