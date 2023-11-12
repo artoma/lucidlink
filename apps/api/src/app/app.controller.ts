@@ -1,9 +1,4 @@
-import {
-    Controller,
-    Get,
-    ParseIntPipe,
-    Query,
-} from '@nestjs/common';
+import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
 
 import { AppService } from './app.service';
 
@@ -24,7 +19,6 @@ export class AppController {
         return this.appService
             .getGraphData()
             .slice(1000, 2000)
-            .map((item) => [item.timeStamp, item.price])
-            
+            .map((item) => [item.timeStamp, item.price]);
     }
 }

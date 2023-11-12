@@ -1,50 +1,50 @@
-version: "3.8"
+version: '3.8'
 
 networks:
-  corp:
-    driver: bridge
+    corp:
+        driver: bridge
 
 services:
-  api:
-    container_name: api
-    build:
-      context: ./
-      cache_from:
-        - node:20.9-alpine
-      dockerfile: ./apps/api/Dockerfile
-      args:
-        NODE_ENV: "production"
-        BUILD_FLAG: "production"
-        START_TIME: 1698181200000
-    image: api:0.1
-    ports:
-      - 4939:4939
-    environment:
-      NODE_ENV: "production"
-      PORT: 4939
-      START_TIME: 1698181200000
-    networks:
-      - corp
-    restart: on-failure
+    api:
+        container_name: api
+        build:
+            context: ./
+            cache_from:
+                - node:20.9-alpine
+            dockerfile: ./apps/api/Dockerfile
+            args:
+                NODE_ENV: 'production'
+                BUILD_FLAG: 'production'
+                START_TIME: 1698181200000
+        image: api:0.1
+        ports:
+            - 4939:4939
+        environment:
+            NODE_ENV: 'production'
+            PORT: 4939
+            START_TIME: 1698181200000
+        networks:
+            - corp
+        restart: on-failure
 
-  frontend:
-    container_name: frontend
-    build:
-      context: ./
-      cache_from:
-        - nginx:1.19.2
-      dockerfile: ./apps/frontend/Dockerfile
-      args:
-        NODE_ENV: "production"
-        BUILD_FLAG: "production"
-    image: frontend:0.1
-    ports:
-      - 4900:80
-    environment:
-      NODE_ENV: "production"
-      PORT: 4900
-    depends_on:
-      - api  
-    networks:
-      - corp
-    restart: on-failure
+    frontend:
+        container_name: frontend
+        build:
+            context: ./
+            cache_from:
+                - nginx:1.19.2
+            dockerfile: ./apps/frontend/Dockerfile
+            args:
+                NODE_ENV: 'production'
+                BUILD_FLAG: 'production'
+        image: frontend:0.1
+        ports:
+            - 4900:80
+        environment:
+            NODE_ENV: 'production'
+            PORT: 4900
+        depends_on:
+            - api
+        networks:
+            - corp
+        restart: on-failure

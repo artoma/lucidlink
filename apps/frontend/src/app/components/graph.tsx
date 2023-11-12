@@ -15,7 +15,6 @@ import AvailableFunds from './available-funds';
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-
 const GraphComponent: React.FC = () => {
     const [data, setData] = useState([]);
     const [dateTimeValue, updateDateTime] = useState<Value>([
@@ -34,13 +33,11 @@ const GraphComponent: React.FC = () => {
     const [bestSellTimeInfo, setBestSellTimeInfo] = useState('');
 
     useEffect(() => {
-            const loadData = async (apiUrl: string) => {
+        const loadData = async (apiUrl: string) => {
             const res = await axios.get(apiUrl);
             setData(res.data);
         };
-        loadData(
-            `http://localhost:4939/api/graph`
-        );
+        loadData(`http://localhost:4939/api/graph`);
     }, []);
 
     useEffect(() => {
@@ -68,14 +65,13 @@ const GraphComponent: React.FC = () => {
         };
         chartUpdatedEvent();
     }, [bestBuyPrice, bestBuyTime, bestSellPrice, bestSellTime, data]);
-    
+
     useEffect(() => {
-        if(bestBuyTime > 0 && bestSellTime > 0){
+        if (bestBuyTime > 0 && bestSellTime > 0) {
             setBestBuyTimeInfo(new Date(bestBuyTime).toString());
             setBestSellTimeInfo(new Date(bestSellTime).toString());
         }
-            
-    }, [bestBuyTime, bestSellTime])
+    }, [bestBuyTime, bestSellTime]);
 
     const loadIntervalData = async (apiUrl: string) => {
         const res = await axios.get(apiUrl);
@@ -85,13 +81,11 @@ const GraphComponent: React.FC = () => {
         setbestBuyPrice(res.data.bestBuyPrice);
         setBestSellPrice(res.data.bestSellPrice);
 
-        
         const _stockCount = funds / res.data.bestBuyPrice;
         setStocksCount(_stockCount || 0);
-        const buyPrice = _stockCount * res.data.bestBuyPrice
+        const buyPrice = _stockCount * res.data.bestBuyPrice;
         const sellPrice = _stockCount * res.data.bestSellPrice;
         setProfit(sellPrice - buyPrice || 0);
-        
     };
 
     const buttonClick = async () => {
@@ -194,14 +188,9 @@ const GraphComponent: React.FC = () => {
             <Container fluid="md">
                 <Row className="my-3">
                     <Col>
-                        <label
-                            className="control-label"
-                        >
-                            Select period:{' '}
-                        </label>
+                        <label className="control-label">Select period: </label>
                         <DateTimeRangePicker
                             className="form-control"
-                            
                             nativeInputAriaLabel=""
                             minDate={new Date(1698181200000)}
                             maxDate={new Date(1699045199000)}
@@ -221,7 +210,8 @@ const GraphComponent: React.FC = () => {
                         </Button>
                     </Col>
                     <Col>
-                        <b>Result:</b><br/>
+                        <b>Result:</b>
+                        <br />
                         Buy Date: {bestBuyTimeInfo} <br />
                         Sell Date: {bestSellTimeInfo} <br />
                         Stocks you can buy: {stocksCount.toFixed(2)} <br />

@@ -1,7 +1,9 @@
 import React, { FC, useState } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 
-interface AvailableFundsProps {getFunds:  (...args: any[]) => any; } 
+interface AvailableFundsProps {
+    getFunds: (...args: any[]) => any;
+}
 
 export const AvailableFunds: FC<AvailableFundsProps> = ({ getFunds }) => {
     const [errorMessage, setErrorMessage] = useState('');

@@ -25,7 +25,12 @@ describe('AppController', () => {
     beforeAll(async () => {
         appModule = await Test.createTestingModule({
             controllers: [AppController],
-            providers: [AppService, DataService, ConfigService, StockAnalyzerService],
+            providers: [
+                AppService,
+                DataService,
+                ConfigService,
+                StockAnalyzerService,
+            ],
         }).compile();
 
         appService = appModule.get(AppService);
@@ -36,9 +41,12 @@ describe('AppController', () => {
             const appController = appModule.get<AppController>(AppController);
 
             jest.spyOn(appService, 'getData').mockImplementation(
-                () => analyzerResult );
+                () => analyzerResult
+            );
 
-            expect(appController.getData(Date.now(), Date.now())).toMatchObject(analyzerResult);
+            expect(appController.getData(Date.now(), Date.now())).toMatchObject(
+                analyzerResult
+            );
         });
     });
 });
