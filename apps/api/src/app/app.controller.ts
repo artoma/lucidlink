@@ -16,9 +16,6 @@ export class AppController {
 
     @Get('graph')
     getGraph() {
-        return this.appService
-            .getGraphData()
-            .slice(1000, 2000)
-            .map((item) => [item.timeStamp, item.price]);
+        return this.appService.getGraphData();
     }
 }

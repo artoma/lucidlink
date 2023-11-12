@@ -37,6 +37,9 @@ export class AppService implements OnModuleInit {
     }
 
     getGraphData() {
-        return this.sotckAnalyzerService.getGraphData();
+        return this.sotckAnalyzerService
+            .getGraphData()
+            .slice(1000, 2000)
+            .map((item) => [item.timeStamp, item.price]);
     }
 }
